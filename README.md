@@ -1,4 +1,4 @@
-Aplikacja ma za zadanie oznajmiać obecność cukrzycy lun jej brak.
+Aplikacja ma za zadanie oznajmiać obecność cukrzycy lub jej brak.
 
 Robi to za pośrednictwem danych przekazanych przez użykownika w interfejsie aplikacji.
 
