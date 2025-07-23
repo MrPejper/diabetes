@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from pycaret.classification import load_model, predict_model
-from langfuse import Langfuse
+#from langfuse import Langfuse
 import uuid
 import os
 from dotenv import load_dotenv
@@ -10,15 +10,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY")
-LANGFUSE_SECRET_KEY = os.getenv("LANGFUSE_SECRET_KEY")
-LANGFUSE_HOST = os.getenv("LANGFUSE_HOST")  
+#LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY")
+#LANGFUSE_SECRET_KEY = os.getenv("LANGFUSE_SECRET_KEY")
+#LANGFUSE_HOST = os.getenv("LANGFUSE_HOST")  
 
-langfuse = Langfuse(
-    public_key=LANGFUSE_PUBLIC_KEY,
-    secret_key=LANGFUSE_SECRET_KEY,
-    host=LANGFUSE_HOST   
-)
+#langfuse = Langfuse(
+#    public_key=LANGFUSE_PUBLIC_KEY,
+#    secret_key=LANGFUSE_SECRET_KEY,
+#    host=LANGFUSE_HOST   
+#)
 # ==== WCZYTANIE MODELU ====
 model = load_model("diabetes_model")
 
@@ -63,19 +63,19 @@ with st.form("form"):
             })
 
             # ==== LANGFUSE MONITORING ====
-            user_id = str(uuid.uuid4())
-            trace = langfuse.trace(name="diabetes-prediction", user_id=user_id)
+            #user_id = str(uuid.uuid4())
+            #trace = langfuse.trace(name="diabetes-prediction", user_id=user_id)
 
             try:
-                span = trace.span(name="pycaret-model-call", input=input_df.to_dict())
+               # span = trace.span(name="pycaret-model-call", input=input_df.to_dict())
 
                 prediction = predict_model(model, data=input_df)
                 result = int(prediction.loc[0, 'prediction_label'])
                 score = float(prediction.loc[0, 'prediction_score']) if 'prediction_score' in prediction.columns else None
 
-                span.end(output={"result": result, "score": score})
-                trace.score(name="confidence", value=score or 0.0)
-                trace.metadata = {"gender": gender, "age": age}
+                #span.end(output={"result": result, "score": score})
+                #trace.score(name="confidence", value=score or 0.0)
+                #trace.metadata = {"gender": gender, "age": age}
 
                 # ==== OCENA PARAMETRÓW ====
                 st.subheader("📋 Ocena parametrów:")
@@ -98,5 +98,5 @@ with st.form("form"):
                     st.success("🟢 Brak cukrzycy (0)")
 
             except Exception as e:
-                span.end(output={"error": str(e)})
+                #span.end(output={"error": str(e)})
                 st.error(f"Błąd predykcji: {str(e)}")
